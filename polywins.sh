@@ -11,6 +11,9 @@ inactive_text_color="#250F0B"
 inactive_bg=
 inactive_underline=
 
+hidden_text_color="#F4DDD8"
+hidden_bg=
+hidden_underline=
 separator="·"
 show="window_class" # options: window_title, window_class, window_classname
 forbidden_classes="Polybar Conky Gmrun"
@@ -102,6 +105,8 @@ active_left="%{F$active_text_color}"
 active_right="%{F-}"
 inactive_left="%{F$inactive_text_color}"
 inactive_right="%{F-}"
+hidden_left="%{F$hidden_text_color}"
+hidden_right="%{F-}"
 separator="%{F$inactive_text_color}$separator%{F-}"
 
 if [ -n "$active_underline" ]; then
@@ -139,6 +144,15 @@ get_active_workspace() {
 		while IFS="[ .]" read -r number active_status _; do
 			test "$active_status" = "*" && echo "$number" && break
 		done
+}
+
+is_hidden_wid() {
+	if xprop -id "$1" | grep -q "window state: Normal"
+	then
+		return 1
+	else
+		return 0
+	fi
 }
 
 generate_window_list() {
@@ -198,6 +212,8 @@ generate_window_list() {
 		# Add left and right formatting to displayed name
 		if [ "$wid" = "$active_wid" ]; then
 			w_name="${active_left}${w_name}${active_right}"
+		elif ( is_hidden_wid "$wid"); then
+			w_name="${hidden_left}${w_name}${hidden_right}"
 		else
 			w_name="${inactive_left}${w_name}${inactive_right}"
 		fi
