@@ -16,7 +16,7 @@ show="window_class" # options: window_title, window_class, window_classname
 forbidden_classes="Polybar Conky Gmrun"
 empty_desktop_message="Desktop"
 
-char_limit=20
+char_limit=10
 max_windows=15
 char_case="normal" # normal, upper, lower
 add_spaces="true"
@@ -51,7 +51,7 @@ raise_or_minimize() {
 	if [ "$(get_active_wid)" = "$1" ]; then
 		wmctrl -ir "$1" -b toggle,hidden
 	else
-		wmctrl -ia "$1"
+		wmctrl -ir "$1" -b remove,hidden; wmctrl -ia "$1"
 	fi
 }
 
